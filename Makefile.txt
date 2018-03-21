@@ -1,0 +1,32 @@
+#
+# makefile for Cm32 compiler   for Visual C++ & KMyacc
+#
+# use nmake.exe to make this
+#
+
+KMYACC = ..\kmyacc\kmyacc.exe
+KFLAGS = -m ..\kmyacc\kmyacc.c.parser
+CC = cl.exe
+CFLAGS = 
+LINKER = link.exe
+LFLAGS = 
+
+TARGET = cm32.exe
+OBJ =	 cm.obj exp.obj declare.obj lexstr.obj heap.obj table.obj \
+		 misc.obj gencode.obj genexp.obj main.obj lex.obj stmt.obj \
+		 iskanji.obj
+
+$(TARGET):	$(OBJ)
+	$(LINKER) $(OBJ) -out:$(TARGET)
+
+.c.obj:
+	$(CC) $(CFLAGS) -c $<
+
+cm.obj:	cm.y
+	$(KMYACC) $(KFLAGS) -d cm.y
+	copy y.tab.c cm.c
+	copy y.tab.h cm.h
+	del y.tab.c
+	del y.tab.h
+	$(CC) $(CFLAGS) -c cm.c
+
